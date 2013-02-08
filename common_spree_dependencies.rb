@@ -7,12 +7,12 @@ gem 'json'
 gem 'sqlite3'
 gem 'mysql2'
 gem 'pg'
-gem 'multi_json', "1.2.0"
+gem 'multi_json', '1.5.0'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', "~> 3.2"
-  gem 'coffee-rails', "~> 3.2"
+  gem 'sass-rails', '~> 3.2'
+  gem 'coffee-rails', '~> 3.2'
 end
 
 group :test do
@@ -21,9 +21,9 @@ group :test do
 
   gem 'ffaker'
   gem 'shoulda-matchers', '~> 1.0.0'
-  gem 'capybara', '1.1.3'
-  gem 'selenium-webdriver', '2.27.1'
-  gem 'database_cleaner', '0.7.1'
+  gem 'capybara', '2.0.2'
+  gem 'selenium-webdriver', '2.29.0'
+  gem 'database_cleaner', '0.9.1'
   gem 'launchy'
   gem 'pry'
   gem 'webmock', '1.8.11'
