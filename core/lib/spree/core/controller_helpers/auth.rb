@@ -9,6 +9,7 @@ module Spree
           helper_method :try_spree_current_user
 
           rescue_from CanCan::AccessDenied do |exception|
+            Rails.logger.error "access denied: #{exception.inspect}\n#{exception.backtrace}"
             redirect_unauthorized_access
           end
         end
@@ -56,6 +57,7 @@ module Spree
           elsif respond_to?(:current_spree_user)
             current_spree_user
           else
+            Rails.logger.error "cant get spree user!!!!!!!!!!"
             nil
           end
         end
@@ -64,10 +66,14 @@ module Spree
         # Override this method in your controllers if you want to have special behavior in case the user is not authorized
         # to access the requested action.  For example, a popup window might simply close itself.
         def redirect_unauthorized_access
-          if try_spree_current_user
+          user = try_spree_current_user
+          Rails.logger.error "user!!!!: #{user.inspect}"
+          if user.nil?
+            Rails.logger.error "unable to get spree user!!!!"
             flash[:error] = Spree.t(:authorization_failure)
-            redirect_to '/unauthorized'
+            redirect_to '/shop/unauthorized'
           else
+            Rails.logger.error "is logged in but no access"
             store_location
             if respond_to?(:spree_login_path)
               redirect_to spree_login_path
@@ -75,7 +81,7 @@ module Spree
               redirect_to spree.respond_to?(:root_path) ? spree.root_path : root_path
             end
           end
-        end
+        end  
 
       end
     end
