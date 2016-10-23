@@ -41,8 +41,13 @@ module Spree
 
     # Adds a new item to the order (creating a new order if none already exists)
     def populate
-      populator = Spree::OrderPopulator.new(current_order(create_order_if_necessary: true), current_currency)
-      if populator.populate(params[:variant_id], params[:quantity], params[:options])
+      @order = current_order(create_order_if_necessary: true)
+      associate_user
+
+      populator = Spree::OrderPopulator.new(@order, current_currency)
+      if populator.populate(params[:variant_id], params[:quantity])
+        current_order.ensure_updated_shipments
+
         respond_with(@order) do |format|
           format.html { redirect_to cart_path }
         end
@@ -71,6 +76,7 @@ module Spree
     def check_authorization
       cookies.permanent.signed[:guest_token] = params[:token] if params[:token]
       order = Spree::Order.find_by_number(params[:id]) || current_order
+      associate_user
 
       if order
         authorize! :edit, order, cookies.signed[:guest_token]
@@ -95,6 +101,7 @@ module Spree
           flash[:error] = Spree.t(:order_not_found)
           redirect_to root_path and return
         end
+        associate_user
       end
   end
 end
